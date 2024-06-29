@@ -1872,6 +1872,10 @@ fn list_from_cursor<'a>(
     }
     cursor.goto_parent();
 
+    if should_ignore_last_child(config, &root_node, &between_delim) {
+        between_delim.pop();
+    }
+
     let inner_list = Syntax::new_list(
         arena,
         inner_open_content,
