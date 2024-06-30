@@ -1873,7 +1873,20 @@ fn list_from_cursor<'a>(
     cursor.goto_parent();
 
     if should_ignore_last_child(config, &root_node, &between_delim) {
-        between_delim.pop();
+        if let Some(last_child) = between_delim.pop() {
+            if let Syntax::Atom {
+                position,
+                content,
+                kind,
+                ..
+            } = last_child
+            {
+                let position = position.clone();
+                // TODO: New unused kind for atoms.
+                let new_last_child = Syntax::new_atom(arena, position, content, *kind);
+                between_delim.push(new_last_child);
+            }
+        }
     }
 
     let inner_list = Syntax::new_list(
