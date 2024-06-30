@@ -1875,15 +1875,12 @@ fn list_from_cursor<'a>(
     if should_ignore_last_child(config, &root_node, &between_delim) {
         if let Some(last_child) = between_delim.pop() {
             if let Syntax::Atom {
-                position,
-                content,
-                kind,
-                ..
+                position, content, ..
             } = last_child
             {
                 let position = position.clone();
-                // TODO: New unused kind for atoms.
-                let new_last_child = Syntax::new_atom(arena, position, content, *kind);
+                let new_last_child =
+                    Syntax::new_atom(arena, position, content, AtomKind::CanIgnore);
                 between_delim.push(new_last_child);
             }
         }
