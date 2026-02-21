@@ -333,7 +333,7 @@ fn highlight_as_novel(
 
 /// Find the longest line in `lhs_src` and `rhs_src` that will be
 /// displayed.
-fn displayed_content_max_len_in_bytes(
+fn visible_content_max_len_in_bytes(
     lhs_src: &str,
     rhs_src: &str,
     hunks: &[Hunk],
@@ -424,7 +424,7 @@ pub(crate) fn print(
     lhs_mps: &[MatchedPos],
     rhs_mps: &[MatchedPos],
 ) {
-    let content_max_width = displayed_content_max_len_in_bytes(
+    let content_max_width = visible_content_max_len_in_bytes(
         lhs_src,
         rhs_src,
         hunks,
