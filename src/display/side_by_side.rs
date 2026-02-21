@@ -181,10 +181,13 @@ impl SourceDimensions {
         rhs_max_line_visible: LineNumber,
         lhs_max_line_in_file: LineNumber,
         rhs_max_line_in_file: LineNumber,
-        content_max_width: usize,
+        lhs_content_max_width: usize,
+        rhs_content_max_width: usize,
     ) -> Self {
         let lhs_line_nums_width = format_line_num(lhs_max_line_visible).len();
         let rhs_line_nums_width = format_line_num(rhs_max_line_visible).len();
+
+        let content_max_width = max(lhs_content_max_width, rhs_content_max_width);
 
         // If the file lines are extremely short, treat them as if
         // they have a line of 25 characters.
@@ -332,13 +335,13 @@ fn highlight_as_novel(
 }
 
 /// Find the longest line in `lhs_src` and `rhs_src` that will be
-/// displayed.
+/// displayed. Return the length of that line for both LHS and RHS.
 fn visible_content_max_len_in_bytes(
     lhs_src: &str,
     rhs_src: &str,
     hunks: &[Hunk],
     num_context_lines: u32,
-) -> usize {
+) -> (usize, usize) {
     let mut lhs_displayed_lines: DftHashSet<usize> = DftHashSet::default();
     let mut rhs_displayed_lines: DftHashSet<usize> = DftHashSet::default();
 
@@ -397,20 +400,21 @@ fn visible_content_max_len_in_bytes(
         }
     }
 
-    let mut content_max_width: usize = 0;
+    let mut lhs_content_max_width: usize = 0;
+    let mut rhs_content_max_width: usize = 0;
 
     for (lhs_i, lhs_line) in lhs_src.lines().enumerate() {
         if lhs_displayed_lines.contains(&lhs_i) {
-            content_max_width = max(content_max_width, lhs_line.len());
+            lhs_content_max_width = max(lhs_content_max_width, lhs_line.len());
         }
     }
     for (rhs_i, rhs_line) in rhs_src.lines().enumerate() {
         if rhs_displayed_lines.contains(&rhs_i) {
-            content_max_width = max(content_max_width, rhs_line.len());
+            rhs_content_max_width = max(rhs_content_max_width, rhs_line.len());
         }
     }
 
-    content_max_width
+    (lhs_content_max_width, rhs_content_max_width)
 }
 
 pub(crate) fn print(
@@ -424,7 +428,7 @@ pub(crate) fn print(
     lhs_mps: &[MatchedPos],
     rhs_mps: &[MatchedPos],
 ) {
-    let content_max_width = visible_content_max_len_in_bytes(
+    let (lhs_content_max_width, rhs_content_max_width) = visible_content_max_len_in_bytes(
         lhs_src,
         rhs_src,
         hunks,
@@ -585,7 +589,8 @@ pub(crate) fn print(
         rhs_max_visible_line,
         lhs_max_line_in_file,
         rhs_max_line_in_file,
-        content_max_width,
+        lhs_content_max_width,
+        rhs_content_max_width,
     );
 
     for (i, hunk) in hunks.iter().enumerate() {
@@ -789,6 +794,7 @@ mod tests {
             1.into(),
             10.into(),
             9999,
+            9999,
         );
 
         assert_eq!(source_dims.lhs_line_nums_width, 2);
@@ -804,6 +810,7 @@ mod tests {
             1.into(),
             1.into(),
             9999,
+            9999,
         );
 
         assert_eq!(
@@ -818,7 +825,8 @@ mod tests {
 
     #[test]
     fn test_format_missing_line_num_at_end() {
-        let source_dims = SourceDimensions::new(80, 1.into(), 1.into(), 1.into(), 1.into(), 9999);
+        let source_dims =
+            SourceDimensions::new(80, 1.into(), 1.into(), 1.into(), 1.into(), 9999, 9999);
 
         assert_eq!(
             format_missing_line_num(1.into(), &source_dims, Side::Left, false, true),
