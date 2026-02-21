@@ -18,8 +18,8 @@ use crate::options::{DisplayMode, DisplayOptions};
 use crate::parse::syntax::{zip_pad_shorter, MatchedPos};
 use crate::summary::FileFormat;
 
-/// The single space shown between LHS and RHS columns.
-const SPACER: &str = " ";
+/// The space shown between LHS and RHS columns.
+const SPACER: &str = "  ";
 
 fn format_line_num_padded(line_num: LineNumber, column_width: usize) -> String {
     format!(
