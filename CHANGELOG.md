@@ -13,6 +13,11 @@ Difftastic now requires Rust 1.77 or later to build.
 Difftastic no longer uses jemalloc on any Windows builds. Previously
 jemalloc was only disabled for MSVC.
 
+### Command Line Interface
+
+Improved error reporting when invoked with an invalid number of
+arguments.
+
 ## 0.67 (released 16 November 2025)
 
 ### Parsing

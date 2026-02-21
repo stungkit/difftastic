@@ -897,7 +897,7 @@ pub(crate) fn parse_args() -> Mode {
             )
         }
         [display_path, lhs_tmp_file, _lhs_hash, lhs_mode, rhs_tmp_file, _rhs_hash, rhs_mode] => {
-            // https://git-scm.com/docs/git#Documentation/git.txt-codeGITEXTERNALDIFFcode
+            // 7 arguments, per https://git-scm.com/docs/git#Documentation/git.txt-codeGITEXTERNALDIFFcode
             (
                 display_path.to_string_lossy().to_string(),
                 FileArgument::from_path_argument(lhs_tmp_file),
@@ -953,17 +953,29 @@ pub(crate) fn parse_args() -> Mode {
         }
         _ => {
             if !args.is_empty() {
+                let formatted_args = args
+                    .iter()
+                    .map(|arg| arg.to_string_lossy())
+                    .collect::<Vec<_>>();
+
+                let bin_name = if let Some(first_arg) = std::env::args_os().next() {
+                    first_arg.to_string_lossy().to_string()
+                } else {
+                    env!("CARGO_BIN_NAME").to_owned()
+                };
+
                 print_error(
                     &format!(
-                        "Difftastic does not support being called with {} argument{}.\n",
+                        "Difftastic does not support being called with {} argument{}.\n\nYou can pass 2 arguments, or arguments in the form used by GIT_EXTERNAL_DIFF (7 or 9 arguments). See --help for more details. \n\nFor reference, difftastic was invoked as `{} {}`.\n",
                         args.len(),
-                        if args.len() == 1 { "" } else { "s" }
+                        if args.len() == 1 { "" } else { "s" },
+                        bin_name,
+                        formatted_args.join(" "),
                     ),
                     use_color,
                 );
             }
-            eprintln!("USAGE:\n\n    {}\n", USAGE);
-            eprintln!("For more information try --help");
+
             std::process::exit(EXIT_BAD_ARGUMENTS);
         }
     };
