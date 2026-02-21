@@ -10,6 +10,9 @@ Fixed an issue with parsing raw string literals in Rust.
 
 Difftastic now requires Rust 1.77 or later to build.
 
+Difftastic no longer uses jemalloc on any Windows builds. Previously
+jemalloc was only disabled for MSVC.
+
 ## 0.67 (released 16 November 2025)
 
 ### Parsing
