@@ -61,25 +61,23 @@ extern crate log;
 
 use display::style::print_warning;
 use log::info;
-use options::FilePermissions;
-use options::USAGE;
+use options::{FilePermissions, USAGE};
 
-use crate::conflicts::apply_conflict_markers;
-use crate::conflicts::START_LHS_MARKER;
+use crate::conflicts::{apply_conflict_markers, START_LHS_MARKER};
 use crate::diff::changes::ChangeMap;
 use crate::diff::dijkstra::ExceededGraphLimit;
 use crate::diff::{dijkstra, unchanged};
 use crate::display::context::opposite_positions;
 use crate::display::hunks::{matched_pos_to_hunks, merge_adjacent};
 use crate::display::style::print_error;
-use crate::exit_codes::EXIT_BAD_ARGUMENTS;
-use crate::exit_codes::{EXIT_FOUND_CHANGES, EXIT_SUCCESS};
+use crate::exit_codes::{EXIT_BAD_ARGUMENTS, EXIT_FOUND_CHANGES, EXIT_SUCCESS};
 use crate::files::{
     guess_content, read_file_or_die, read_files_or_die, read_or_die, relative_paths_in_either,
     ProbableFileKind,
 };
-use crate::parse::guess_language::language_globs;
-use crate::parse::guess_language::{guess, language_name, Language, LanguageOverride};
+use crate::parse::guess_language::{
+    guess, language_globs, language_name, Language, LanguageOverride,
+};
 use crate::parse::syntax;
 
 /// The global allocator used by difftastic.
@@ -115,13 +113,13 @@ use strum::IntoEnumIterator;
 use typed_arena::Arena;
 
 use crate::diff::sliders::fix_all_sliders;
+use crate::dijkstra::mark_syntax;
+use crate::lines::MaxLine;
 use crate::options::{DiffOptions, DisplayMode, DisplayOptions, FileArgument, Mode};
+use crate::parse::syntax::init_all_info;
+use crate::parse::tree_sitter_parser as tsp;
 use crate::summary::{DiffResult, FileContent, FileFormat};
 use crate::syntax::init_next_prev;
-use crate::{
-    dijkstra::mark_syntax, lines::MaxLine, parse::syntax::init_all_info,
-    parse::tree_sitter_parser as tsp,
-};
 
 extern crate pretty_env_logger;
 

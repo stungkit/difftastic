@@ -8,7 +8,8 @@
 //! Difftastic does not reuse languages.yml directly. Linguist has a
 //! larger set of language detection strategies.
 
-use std::{borrow::Borrow, path::Path};
+use std::borrow::Borrow;
+use std::path::Path;
 
 use lazy_static::lazy_static;
 use regex::Regex;

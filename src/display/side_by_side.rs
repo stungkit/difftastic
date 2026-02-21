@@ -2,26 +2,21 @@
 
 use std::cmp::{max, min};
 
-use line_numbers::LineNumber;
-use line_numbers::SingleLineSpan;
+use line_numbers::{LineNumber, SingleLineSpan};
 use owo_colors::{OwoColorize, Style};
 
-use crate::{
-    constants::Side,
-    display::{
-        context::all_matched_lines_filled,
-        hunks::{matched_lines_indexes_for_hunk, Hunk},
-        style::{
-            self, apply_colors, apply_line_number_color, color_positions, novel_style,
-            replace_tabs, split_and_apply, BackgroundColor,
-        },
-    },
-    hash::{DftHashMap, DftHashSet},
-    lines::{format_line_num, split_on_newlines},
-    options::{DisplayMode, DisplayOptions},
-    parse::syntax::{zip_pad_shorter, MatchedPos},
-    summary::FileFormat,
+use crate::constants::Side;
+use crate::display::context::all_matched_lines_filled;
+use crate::display::hunks::{matched_lines_indexes_for_hunk, Hunk};
+use crate::display::style::{
+    self, apply_colors, apply_line_number_color, color_positions, novel_style, replace_tabs,
+    split_and_apply, BackgroundColor,
 };
+use crate::hash::{DftHashMap, DftHashSet};
+use crate::lines::{format_line_num, split_on_newlines};
+use crate::options::{DisplayMode, DisplayOptions};
+use crate::parse::syntax::{zip_pad_shorter, MatchedPos};
+use crate::summary::FileFormat;
 
 /// The single space shown between LHS and RHS columns.
 const SPACER: &str = " ";
@@ -781,11 +776,9 @@ mod tests {
     use pretty_assertions::assert_eq;
 
     use super::*;
-    use crate::{
-        options::DEFAULT_TERMINAL_WIDTH,
-        parse::guess_language::Language,
-        syntax::{AtomKind, MatchKind, TokenKind},
-    };
+    use crate::options::DEFAULT_TERMINAL_WIDTH;
+    use crate::parse::guess_language::Language;
+    use crate::syntax::{AtomKind, MatchKind, TokenKind};
 
     #[test]
     fn test_width_calculations() {

@@ -6,7 +6,8 @@
 // body for readability.
 #![allow(clippy::if_same_then_else)]
 
-use std::{path::PathBuf, process::Command};
+use std::path::PathBuf;
+use std::process::Command;
 
 use rayon::prelude::*;
 use version_check as rustc;

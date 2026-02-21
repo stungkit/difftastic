@@ -1,18 +1,15 @@
 use std::collections::BTreeMap;
 
 use line_numbers::LineNumber;
-use serde::{ser::SerializeStruct, Serialize, Serializer};
+use serde::ser::SerializeStruct;
+use serde::{Serialize, Serializer};
 
-use crate::{
-    display::{
-        context::{all_matched_lines_filled, opposite_positions},
-        hunks::{matched_lines_indexes_for_hunk, matched_pos_to_hunks, merge_adjacent},
-        side_by_side::lines_with_novel,
-    },
-    lines::MaxLine,
-    parse::syntax::{self, MatchedPos, StringKind},
-    summary::{DiffResult, FileContent, FileFormat},
-};
+use crate::display::context::{all_matched_lines_filled, opposite_positions};
+use crate::display::hunks::{matched_lines_indexes_for_hunk, matched_pos_to_hunks, merge_adjacent};
+use crate::display::side_by_side::lines_with_novel;
+use crate::lines::MaxLine;
+use crate::parse::syntax::{self, MatchedPos, StringKind};
+use crate::summary::{DiffResult, FileContent, FileFormat};
 
 #[derive(Debug, Serialize, PartialEq)]
 #[serde(rename_all = "lowercase")]

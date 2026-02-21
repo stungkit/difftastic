@@ -5,8 +5,7 @@ use streaming_iterator::StreamingIterator as _;
 use tree_sitter as ts;
 use typed_arena::Arena;
 
-use super::syntax::MatchedPos;
-use super::syntax::{self, StringKind};
+use super::syntax::{self, MatchedPos, StringKind};
 use crate::hash::{DftHashMap, DftHashSet};
 use crate::options::DiffOptions;
 use crate::parse::guess_language as guess;

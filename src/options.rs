@@ -1,22 +1,18 @@
 //! CLI option parsing.
 
-use std::{
-    env,
-    ffi::{OsStr, OsString},
-    fmt::Display,
-    path::{Path, PathBuf},
-};
+use std::env;
+use std::ffi::{OsStr, OsString};
+use std::fmt::Display;
+use std::path::{Path, PathBuf};
 
 use clap::{crate_authors, crate_description, value_parser, Arg, ArgAction, Command};
 use crossterm::tty::IsTty;
 use owo_colors::OwoColorize as _;
 
-use crate::{
-    display::style::{print_error, BackgroundColor},
-    exit_codes::EXIT_BAD_ARGUMENTS,
-    parse::guess_language::{language_override_from_name, LanguageOverride},
-    version::VERSION,
-};
+use crate::display::style::{print_error, BackgroundColor};
+use crate::exit_codes::EXIT_BAD_ARGUMENTS;
+use crate::parse::guess_language::{language_override_from_name, LanguageOverride};
+use crate::version::VERSION;
 
 pub(crate) const DEFAULT_BYTE_LIMIT: usize = 1_000_000;
 // Chosen experimentally: this is sufficiently many for all the sample
