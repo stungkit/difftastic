@@ -1147,7 +1147,13 @@ fn build_config(language: guess::Language) -> TreeSitterConfig {
                 language: language.clone(),
                 atom_nodes: ["string", "quoted_key"].into_iter().collect(),
                 delimiter_tokens: vec![("{", "}"), ("[", "]")],
-                ignore_trailing_tokens: vec![],
+                ignore_trailing_tokens: vec![
+                    // Arrays have always supported trailing commas.
+                    ("array", ","),
+                    // Inline tables support trailing commas as of TOML 1.1
+                    // https://github.com/toml-lang/toml/pull/904
+                    // but the tree-sitter parser doesn't allow that syntax yet.
+                ],
                 highlight_query: ts::Query::new(&language, tree_sitter_toml_ng::HIGHLIGHTS_QUERY)
                     .unwrap(),
                 sub_languages: vec![],
