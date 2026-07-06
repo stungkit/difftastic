@@ -74,7 +74,7 @@ pub(crate) struct SyntaxInfo<'a> {
     content_id: Cell<ContentId>,
     /// Is this the only node with this content? Ignores nodes on the
     /// other side.
-    content_is_unique: Cell<bool>,
+    content_is_unique_to_side: Cell<bool>,
 }
 
 impl<'a> SyntaxInfo<'a> {
@@ -88,7 +88,7 @@ impl<'a> SyntaxInfo<'a> {
             num_after: Cell::new(0),
             unique_id: Cell::new(NonZeroU32::new(u32::MAX).unwrap()),
             content_id: Cell::new(0),
-            content_is_unique: Cell::new(false),
+            content_is_unique_to_side: Cell::new(false),
         }
     }
 }
@@ -305,7 +305,7 @@ impl<'a> Syntax<'a> {
     }
 
     pub(crate) fn content_is_unique(&self) -> bool {
-        self.info().content_is_unique.get()
+        self.info().content_is_unique_to_side.get()
     }
 
     pub(crate) fn num_ancestors(&self) -> u32 {
@@ -529,7 +529,7 @@ fn set_content_is_unique_from_counts(nodes: &[&Syntax], counts: &DftHashMap<Cont
         let count = counts
             .get(&node.content_id())
             .expect("Count should be present");
-        node.info().content_is_unique.set(*count == 1);
+        node.info().content_is_unique_to_side.set(*count == 1);
 
         if let List { children, .. } = node {
             set_content_is_unique_from_counts(children, counts);
