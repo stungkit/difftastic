@@ -1821,21 +1821,23 @@ fn list_from_cursor<'a>(
     >,
     ignore_comments: bool,
 ) -> &'a Syntax<'a> {
-    let root_node = cursor.node();
+    let list_root_node = cursor.node();
 
     // We may not have an enclosing delimiter for this list. Use "" as
     // the delimiter text and the start/end of this node as the
     // delimiter positions.
     let outer_open_content = "";
-    let outer_open_position = nl_pos.from_region(root_node.start_byte(), root_node.start_byte());
+    let outer_open_position =
+        nl_pos.from_region(list_root_node.start_byte(), list_root_node.start_byte());
     let outer_close_content = "";
-    let outer_close_position = nl_pos.from_region(root_node.end_byte(), root_node.end_byte());
+    let outer_close_position =
+        nl_pos.from_region(list_root_node.end_byte(), list_root_node.end_byte());
 
     // TODO: this should probably only allow the delimiters to be the
     // first and last child in the list.
     let (i, j) = match find_delim_positions(src, cursor, &config.delimiter_tokens) {
         Some((i, j)) => (i as isize, j as isize),
-        None => (-1, root_node.child_count() as isize),
+        None => (-1, list_root_node.child_count() as isize),
     };
 
     let mut inner_open_content = outer_open_content;
@@ -1914,7 +1916,7 @@ fn list_from_cursor<'a>(
     }
     cursor.goto_parent();
 
-    if can_ignore_last_child(config, &root_node, &between_delim) {
+    if can_ignore_last_child(config, &list_root_node, &between_delim) {
         if let Some(Syntax::Atom {
             position, content, ..
         }) = between_delim.pop()
