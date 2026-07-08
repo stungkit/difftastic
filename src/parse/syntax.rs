@@ -627,14 +627,25 @@ pub(crate) enum AtomKind {
     // TODO: We should either have a AtomWithWords(HighlightKind) or a
     // separate String, Text and Comment kind.
     String(StringKind),
+    /// Diffed the same as `Normal` but highlighted differently during
+    /// display.
     Type,
-    Comment,
+    /// Diffed the same as `Normal` but highlighted differently during
+    /// display.
     Keyword,
+    Comment,
     TreeSitterError,
-    /// Trailing commas can be ignored in some positions, such as the
-    /// last comma in `[1, 2,]` in JS. However, it's not obligatory,
-    /// and it's useful when diffing `[1,]` against `[1, 2]` to be
-    /// able to match up the commas.
+    /// Trailing punctuation atoms, especially commas, can be ignored
+    /// when there are no other changes.
+    ///
+    /// For example, in JS, we want to consider `[1]` and `[1,]` to be
+    /// same. Syntax node equality treats lists that only differ by
+    /// CanIgnore as equal.
+    ///
+    /// Note that diffing still sees these trailing atoms. If we're
+    /// diffing `[]` and `[1,]` we want to ensure that `,` is
+    /// highlighted as novel, and discarding trailing commas entirely
+    /// would prevent that.
     CanIgnore,
 }
 
