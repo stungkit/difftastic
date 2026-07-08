@@ -1781,7 +1781,7 @@ fn syntax_from_cursor<'a>(
 
 /// Does `node` match the ignorable trailing tokens configuration for
 /// this language?
-fn should_ignore_last_child(
+fn can_ignore_last_child(
     config: &TreeSitterConfig,
     node: &ts::Node<'_>,
     children: &[&Syntax<'_>],
@@ -1914,7 +1914,7 @@ fn list_from_cursor<'a>(
     }
     cursor.goto_parent();
 
-    if should_ignore_last_child(config, &root_node, &between_delim) {
+    if can_ignore_last_child(config, &root_node, &between_delim) {
         if let Some(Syntax::Atom {
             position, content, ..
         }) = between_delim.pop()
