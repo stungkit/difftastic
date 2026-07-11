@@ -1,5 +1,45 @@
 //! Implements Dijkstra's algorithm for shortest path, to find an
 //! optimal and readable diff between two ASTs.
+//!
+//! ## Why Dijkstra?
+//!
+//! Dijkstra is fast enough, and it's relatively easy to reason about.
+//!
+//! The obvious alternative to consider is A*. It's typically faster
+//! and there's some precedent for tree diffing with A*.
+//!
+//! <https://www.redblobgames.com/pathfinding/a-star/introduction.html#more>
+//! <https://thume.ca/2017/06/17/tree-diffing/>
+//!
+//! Difftastic's graph structure makes A* difficult. You can think of
+//! the graph as a grid (see the manual for the full graph
+//! description). For diffing sequences of flat tokens, this is fine.
+//!
+//! ```
+//!     A   B
+//!   o---o---o
+//! X |   |   |
+//!   o---o---o
+//! B |   | \ |
+//!   o---o---o <- GOAL
+//! ```
+//!
+//! However, difftastic's graph sometimes has edges with very low cost
+//! when it can match up entire subtrees. These edges cover a long
+//! distance in the grid despite their low cost.
+//!
+//! This means that it's really hard to write a good heuristic for
+//! A*. On a geographical map, you can use geometric distance (use a
+//! ruler) or Manhattan distance (count blocks).
+//!
+//! There's no good equivalent in the difftastic graph, which has no
+//! physical world analogue. I've experimented with A*, but you end up
+//! with something buggy and/or reimplementing much of the graph in
+//! the heuristic.
+//!
+//! Dijkstra works well enough in practice, and preprocessing the
+//! input to find smaller subsections to diff tends to be much more
+//! effective.
 
 use std::cmp::Reverse;
 use std::env;
