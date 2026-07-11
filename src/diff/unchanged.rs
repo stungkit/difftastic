@@ -313,6 +313,12 @@ fn split_unchanged_toplevel<'a>(
     res
 }
 
+/// A 2-tuple that only considers the first item in equality and
+/// sorting.
+///
+/// Helpful when you have some values that you want to treat as equal,
+/// but you also want some metadata to track exactly which value
+/// you're looking at.
 #[derive(Debug, Clone)]
 struct EqOnFirstItem<X, Y>(X, Y);
 
