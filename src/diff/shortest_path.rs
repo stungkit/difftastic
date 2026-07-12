@@ -48,7 +48,7 @@ use bumpalo::Bump;
 use radix_heap::RadixHeapMap;
 
 use crate::diff::changes::ChangeMap;
-use crate::diff::graph::{populate_change_map, set_neighbours, Edge, Vertex};
+use crate::diff::graph::{compute_neighbours, populate_change_map, Edge, Vertex};
 use crate::hash::DftHashMap;
 use crate::parse::syntax::Syntax;
 
@@ -79,8 +79,11 @@ fn shortest_vertex_path<'s, 'v>(
                     break current;
                 }
 
-                set_neighbours(current, vertex_arena, &mut seen);
-                for neighbour in *current.neighbours.borrow().as_ref().unwrap() {
+                let neighbours = *current
+                    .neighbours
+                    .get_or_init(|| compute_neighbours(current, vertex_arena, &mut seen));
+
+                for neighbour in neighbours {
                     let (edge, next) = neighbour;
                     let distance_to_next = distance + edge.cost();
 
@@ -165,7 +168,7 @@ fn edge_between<'s, 'v>(before: &Vertex<'s, 'v>, after: &Vertex<'s, 'v>) -> Edge
     assert_ne!(before, after);
 
     let mut shortest_edge: Option<Edge> = None;
-    if let Some(neighbours) = &*before.neighbours.borrow() {
+    if let Some(neighbours) = before.neighbours.get() {
         for neighbour in *neighbours {
             let (edge, next) = *neighbour;
             // If there are multiple edges that can take us to `next`,
