@@ -233,7 +233,7 @@ pub(crate) fn mark_syntax<'a>(
     // When there are a large number of changes, we end up building a
     // graph whose size is roughly quadratic. Use this as a size hint,
     // so we don't spend too much time re-hashing and expanding the
-    // predecessors hashmap.
+    // seen nodes hashmap.
     //
     // Cap this number to the graph limit, so we don't try to allocate
     // an absurdly large (i.e. greater than physical memory) hashmap
