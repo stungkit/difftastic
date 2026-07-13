@@ -1,4 +1,4 @@
-//! Find nodes that are obviously unchanged, so we can run the main
+//! Find syntax nodes that are obviously unchanged, so we can run the main
 //! diff on smaller inputs.
 
 use std::hash::Hash;
@@ -11,8 +11,11 @@ use crate::parse::syntax::{ContentId, Syntax};
 const TINY_TREE_THRESHOLD: u32 = 10;
 const MOSTLY_UNCHANGED_MIN_COMMON_CHILDREN: usize = 4;
 
-/// Set [`ChangeKind`] on nodes that have exactly the same structure
-/// on both sides, and return a vec of pairs that need proper diffing.
+/// Look for syntax nodes that are obviously the same, and set
+/// [`ChangeKind`] on them.
+///
+/// Split the remaining nodes into subsequences that need proper
+/// diffing, and return those subsequences.
 pub(crate) fn mark_unchanged<'a>(
     lhs_nodes: &[&'a Syntax<'a>],
     rhs_nodes: &[&'a Syntax<'a>],
