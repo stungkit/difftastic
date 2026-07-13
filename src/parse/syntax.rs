@@ -102,11 +102,17 @@ impl Default for SyntaxInfo<'_> {
 pub(crate) enum Syntax<'a> {
     List {
         info: SyntaxInfo<'a>,
+        /// The position of the opening token, such as a `(` or `[`.
         open_position: Vec<SingleLineSpan>,
+        /// The content of the opening token, such as a `"("` or `"[""`.
         open_content: String,
         children: Vec<&'a Syntax<'a>>,
+        /// The position of the closing token, such as a `)` or `]`.
         close_position: Vec<SingleLineSpan>,
+        /// The content of the opening token, such as a `")"` or `"]"`.
         close_content: String,
+        /// The total number of descendants: child nodes, grandchild
+        /// nodes and so on.
         num_descendants: u32,
     },
     Atom {
