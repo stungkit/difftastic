@@ -40,6 +40,8 @@ enum ChangeState {
     PossiblyChanged,
 }
 
+/// Wraps `split_unchanged_toplevel` with a size threshold and updates
+/// `change_map`.
 fn split_unchanged<'a>(
     lhs_nodes: &[&'a Syntax<'a>],
     rhs_nodes: &[&'a Syntax<'a>],
@@ -416,6 +418,8 @@ fn shrink_unchanged_delimiters<'a>(
 
 /// Skip syntax nodes at the beginning or end that are obviously
 /// unchanged.
+///
+/// Recurses when both sides are a singleton list.
 ///
 /// Set the [`ChangeKind`] on the definitely changed nodes, and return the
 /// nodes that may contain changes.
