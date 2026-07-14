@@ -240,8 +240,12 @@ fn split_mostly_unchanged_toplevel<'a>(
     res
 }
 
-/// Mark top-level nodes as unchanged if they have exactly the same
-/// content on both sides.
+/// Walk `lhs_nodes` and `rhs_nodes` and run a
+/// longest-common-subsequence (traditional) diff on their toplevel
+/// content IDs.
+///
+/// For sufficiently large nodes that are equal by ID, mark them as
+/// unchanged. Return the nodes in-between for full tree diffing.
 fn split_unchanged_toplevel<'a>(
     lhs_nodes: &[&'a Syntax<'a>],
     rhs_nodes: &[&'a Syntax<'a>],
