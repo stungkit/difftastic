@@ -257,8 +257,8 @@ fn split_unchanged_toplevel<'a>(
         .collect::<Vec<_>>();
 
     let mut res: Vec<(ChangeState, Vec<&'a Syntax<'a>>, Vec<&'a Syntax<'a>>)> = vec![];
-    let mut section_lhs_nodes = vec![];
-    let mut section_rhs_nodes = vec![];
+    let mut lhs_nodes_with_changes = vec![];
+    let mut rhs_nodes_with_changes = vec![];
 
     for diff_res in lcs_diff::slice(&lhs_node_ids, &rhs_node_ids) {
         match diff_res {
@@ -282,35 +282,35 @@ fn split_unchanged_toplevel<'a>(
                 };
 
                 if tiny_node {
-                    section_lhs_nodes.push(lhs_node);
-                    section_rhs_nodes.push(rhs_node);
+                    lhs_nodes_with_changes.push(lhs_node);
+                    rhs_nodes_with_changes.push(rhs_node);
                 } else {
-                    if !section_lhs_nodes.is_empty() || !section_rhs_nodes.is_empty() {
+                    if !lhs_nodes_with_changes.is_empty() || !rhs_nodes_with_changes.is_empty() {
                         res.extend(split_unchanged_singleton_list(
-                            &section_lhs_nodes,
-                            &section_rhs_nodes,
+                            &lhs_nodes_with_changes,
+                            &rhs_nodes_with_changes,
                             size_threshold,
                         ));
-                        section_lhs_nodes = vec![];
-                        section_rhs_nodes = vec![];
+                        lhs_nodes_with_changes = vec![];
+                        rhs_nodes_with_changes = vec![];
                     }
 
                     res.push((ChangeState::UnchangedNode, vec![lhs_node], vec![rhs_node]));
                 }
             }
             lcs_diff::DiffResult::Left(lhs) => {
-                section_lhs_nodes.push(lhs.1);
+                lhs_nodes_with_changes.push(lhs.1);
             }
             lcs_diff::DiffResult::Right(rhs) => {
-                section_rhs_nodes.push(rhs.1);
+                rhs_nodes_with_changes.push(rhs.1);
             }
         }
     }
 
-    if !section_lhs_nodes.is_empty() || !section_rhs_nodes.is_empty() {
+    if !lhs_nodes_with_changes.is_empty() || !rhs_nodes_with_changes.is_empty() {
         res.extend(split_unchanged_singleton_list(
-            &section_lhs_nodes,
-            &section_rhs_nodes,
+            &lhs_nodes_with_changes,
+            &rhs_nodes_with_changes,
             size_threshold,
         ));
     }
