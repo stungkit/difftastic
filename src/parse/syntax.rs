@@ -51,6 +51,20 @@ pub(crate) type SyntaxId = NonZeroU32;
 pub(crate) type ContentId = u32;
 
 /// Fields that are common to both `Syntax::List` and `Syntax::Atom`.
+///
+/// This struct uses interior mutability (`Cell`) extensively. In some
+/// cases values do actually change: if we're only considering a
+/// subset of the AST, then, we might change e.g. `next_sibling`to
+/// `None` when we shrink.
+///
+/// In other cases (e.g. `unique_id`) this field never changes after
+/// AST initialisation, so this is effectively `OnceCell`. We instead
+/// use a placeholder value of the same type until we're done with
+/// initialisation. `OnceCell` forces us to use an `Option`, which is
+/// more runtime work.
+///
+/// (This is deliberately exchanging correctness-by-construction for
+/// performance.)
 pub(crate) struct SyntaxInfo<'a> {
     /// The previous node with the same parent as this one.
     previous_sibling: Cell<Option<&'a Syntax<'a>>>,
