@@ -6,7 +6,7 @@ Improved diffing performance, particularly when diffing directories.
 
 ### Parsing
 
-Improved support for TOML.
+Improved support for Java and TOML.
 
 Removed support for SCSS (upstream parser is no longer maintained).
 
